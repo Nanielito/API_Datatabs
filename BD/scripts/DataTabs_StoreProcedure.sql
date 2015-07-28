@@ -13916,6 +13916,218 @@ END;
 DELIMITER ;
 
 
+DROP PROCEDURE IF EXISTS sp_validarConsumidorIdentificacion;
+
+DELIMITER //
+CREATE PROCEDURE sp_validarConsumidorIdentificacion(
+	IN  identificacion VARCHAR(50),
+	IN  montoConsumido DECIMAL(15, 2),
+    IN  id_evento      INT,
+	IN  id_nodo        INT,
+	IN  id_dispositivo INT,
+	OUT resultado      VARCHAR(500)
+)
+bye:
+BEGIN
+	DECLARE id_consumidor, id_sucursal, id_empresa, id_nodoPadre, id_objeto INT DEFAULT 0;
+	DECLARE t_contador, s_contador_g, s_contador_a, e_contador_g, e_contador_a INT DEFAULT 0;
+	DECLARE fecha DATETIME;
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+		SET resultado = 'ERROR - 0 - Ocurrio una excepcion';
+		SELECT 0 AS res;
+        ROLLBACK;
+	END;
+
+	IF NOT EXISTS (SELECT * FROM tb_consumidor AS C WHERE C.identificacion = TRIM(identificacion)) THEN
+		SET resultado = 'ERROR - 1 - Consumidor no existe';
+		SELECT -1 AS res;
+        LEAVE bye;
+	END IF;
+
+	IF NOT EXISTS (SELECT * FROM tb_evento AS E WHERE E.id_evento = id_evento AND E.activo = 1) THEN
+		SET resultado = 'ERROR - 2 - Evento no existe';
+		SELECT -2 AS res;
+        LEAVE bye;
+	END IF;
+
+	IF NOT EXISTS (SELECT * FROM tb_nodo AS N WHERE N.id_nodo = id_nodo AND N.activo = 1) THEN
+		SET resultado = 'ERROR - 3 - Nodo no existe';
+		SELECT -3 AS res;
+        LEAVE bye;
+	END IF;
+
+	IF NOT EXISTS (SELECT * FROM tb_dispositivo AS D WHERE D.id_dispositivo = id_dispositivo AND D.activo = 1) THEN
+		SET resultado = 'ERROR - 4 - Dispositivo no existe';
+		SELECT -4 AS res;
+        LEAVE bye;
+	END IF;
+
+	SELECT
+		IFNULL(C.id_consumidor, 0) INTO id_consumidor
+	FROM
+		tb_consumidor AS C
+	WHERE
+		C.identificacion = TRIM(identificacion);
+	
+	IF id_consumidor <= 0 THEN
+		SET resultado = 'ERROR - 5 - Consumidor no existe';
+		SELECT -5 AS res;
+        LEAVE bye;
+	END IF;
+
+	SELECT
+		IFNULL(D.id_sucursal, 0) INTO id_sucursal
+	FROM
+		tb_dispositivo AS D
+	WHERE
+		D.id_dispositivo = id_dispositivo AND D.activo = 1;
+
+	IF id_sucursal <= 0 THEN
+		SET resultado = 'ERROR - 6 - Sucursal no existe';
+		SELECT -6 AS res;
+        LEAVE bye;
+	END IF;
+
+	SELECT
+		IFNULL(S.id_empresa, 0) INTO id_empresa
+	FROM
+		tb_sucursal AS S
+	WHERE
+		S.id_sucursal = id_sucursal AND S.activo = 1;
+
+	IF id_empresa <= 0 THEN
+		SET resultado = 'ERROR - 7 - Empresa no existe';
+		SELECT -7 AS res;
+        LEAVE bye;
+	END IF;
+
+	SELECT
+		IFNULL(V.id_nodoPadre, 0) INTO id_nodoPadre
+	FROM
+		tb_vertice AS V
+	WHERE
+		V.id_nodoHijo = id_nodo AND V.activo = 1;
+
+	IF id_nodoPadre <= 0 THEN
+		SET resultado = 'ERROR - 8 - Nodo padre no existe';
+		SELECT -8 AS res;
+        LEAVE bye;
+	END IF;
+
+	SELECT
+		IFNULL(N.id_objeto, 0) INTO id_objeto
+	FROM
+		tb_nodo AS N
+	WHERE
+		N.id_nodo = id_nodo AND N.activo = 1;
+
+	IF id_objeto <= 0 THEN
+		SET resultado = 'ERROR - 9 - Objeto no existe';
+		SELECT -9 AS res;
+        LEAVE bye;
+	END IF;
+
+	SET fecha = NOW();
+
+	START TRANSACTION;
+		IF NOT EXISTS (SELECT * FROM tb_consumidor_evento AS CE WHERE CE.id_consumidor = id_consumidor AND CE.id_evento = id_evento) THEN
+			INSERT INTO tb_consumidor_evento (id_consumidor, id_evento)
+			VALUES (id_consumidor, id_evento);
+		ELSE
+			UPDATE tb_consumidor_evento AS CE
+			SET CE.visitaGlobal = CE.visitaGlobal + 1, CE.visitaActual = CE.visitaActual + 1
+			WHERE CE.id_consumidor = id_consumidor AND CE.id_evento = id_evento;
+		END IF;
+        
+        INSERT INTO tb_visitaEvento (id_consumidor, id_evento, fechaVisita)
+        VALUES (id_consumidor, id_evento, fecha);
+
+		IF NOT EXISTS (SELECT * FROM tb_consumidor_sucursal AS CS WHERE CS.id_consumidor = id_consumidor AND CS.id_sucursal = id_sucursal) THEN
+			INSERT INTO tb_consumidor_sucursal (id_consumidor, id_sucursal)
+			VALUES (id_consumidor, id_sucursal);
+		ELSE
+			UPDATE tb_consumidor_sucursal AS CS
+			SET CS.visitaGlobal = CS.visitaGlobal + 1, CS.visitaActual = CS.visitaActual + 1
+			WHERE CS.id_consumidor = id_consumidor AND CS.id_sucursal = id_sucursal;
+		END IF;
+        
+        INSERT INTO tb_visitaSucursal (id_consumidor, id_sucursal, fechaVisita, montoConsumido)
+        VALUES (id_consumidor, id_sucursal, fecha, montoConsumido);
+
+		IF NOT EXISTS (SELECT * FROM tb_consumidor_dispositivo AS CD WHERE CD.id_consumidor = id_consumidor AND CD.id_dispositivo = id_dispositivo) THEN
+			INSERT INTO tb_consumidor_dispositivo (id_consumidor, id_dispositivo)
+			VALUES (id_consumidor, id_dispositivo);
+		END IF;
+
+		IF NOT EXISTS (SELECT * FROM tb_consumidor_nodo AS CN WHERE CN.id_consumidor = id_consumidor AND CN.id_nodo = id_nodo) THEN
+			INSERT INTO tb_consumidor_nodo (id_consumidor, id_nodo)
+			VALUES (id_consumidor, id_nodo);
+		ELSE
+			UPDATE tb_consumidor_nodo AS CN
+			SET CN.visitaGlobal = CN.visitaGlobal + 1, CN.visitaActual = CN.visitaActual + 1
+			WHERE CN.id_consumidor = id_consumidor AND CN.id_nodo = id_nodo;
+		END IF;
+        
+        INSERT INTO tb_visitanodo (id_consumidor, id_nodo, fechaVisita)
+        VALUES (id_consumidor, id_nodo, fecha);
+		
+		UPDATE 
+			tb_checkin AS CHK
+			INNER JOIN
+			tb_nodo AS N
+			ON CHK.id_checkin = N.id_objeto
+		SET
+			CHK.contador = CHK.contador + 1
+		WHERE
+			N.id_nodo = id_nodo AND N.id_tipoNodo = 2;
+
+		INSERT INTO tb_nodolog (id_evento, id_sucursal, id_dispositivo, id_nodo, id_tipoNodo, id_consumidor, fechaRegistro)
+		VALUES (id_evento, id_sucursal, id_dispositivo, id_nodoPadre, 1, id_consumidor, fecha);
+
+		INSERT INTO tb_nodolog (id_evento, id_sucursal, id_dispositivo, id_nodo, id_tipoNodo, id_objeto, id_tipoNodoPadre, id_consumidor, fechaRegistro)
+		VALUES (id_evento, id_sucursal, id_dispositivo, id_nodo, 2, id_objeto, 1, id_consumidor, fecha);
+	COMMIT;
+
+	SELECT DISTINCT
+		SUM(CS.visitaGlobal) INTO t_contador
+	FROM
+		tb_consumidor_sucursal AS CS
+		INNER JOIN
+		tb_sucursal AS S
+		ON CS.id_sucursal = S.id_sucursal
+	WHERE
+		CS.id_consumidor = id_consumidor AND S.id_empresa = id_empresa;
+
+	SELECT
+		CS.visitaGlobal, CS.visitaActual INTO s_contador_g, s_contador_a 
+	FROM
+		tb_consumidor_sucursal AS CS
+	WHERE
+		CS.id_consumidor = id_consumidor AND CS.id_sucursal = id_sucursal;
+
+	SELECT
+		CE.visitaGlobal, CE.visitaActual INTO e_contador_g, e_contador_a 
+	FROM
+		tb_consumidor_evento AS CE
+	WHERE
+		CE.id_consumidor = id_consumidor AND CE.id_evento = id_evento;
+
+	SET resultado = 'Ok - 1 - Exito operacion';
+
+	SELECT
+		id_consumidor AS consumidor,
+		t_contador    AS contadorGlobalEmpresa,
+		s_contador_g  AS contadorGlobalSucursal,
+		s_contador_a  AS contadorActualSucursal,
+		e_contador_g  AS contadorGlobalEvento,
+		e_contador_a  AS contadorActualEvento;
+END;
+//
+DELIMITER ;
+
+
 DROP PROCEDURE IF EXISTS sp_validarNodo;
 
 DELIMITER //

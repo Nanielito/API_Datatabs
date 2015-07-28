@@ -1,33 +1,31 @@
-USE `datatabs_main`;
+INSERT INTO datatabs_general.Tb_Idioma (codigo) VALUES ('ES');
+INSERT INTO datatabs_general.Tb_Idioma (codigo) VALUES ('EN');
+
+-- VERSION ESPAÑOL
+INSERT INTO datatabs_general.Tb_Idioma_T (idioma, id_idioma) VALUES ('Español', 1);
+INSERT INTO datatabs_general.Tb_Idioma_T (idioma, id_idioma) VALUES ('Inglés' , 1);
+-- ENGLISH VERSION
+INSERT INTO datatabs_general.Tb_Idioma_T (idioma, id_idioma) VALUES ('Spanish', 2);
+INSERT INTO datatabs_general.Tb_Idioma_T (idioma, id_idioma) VALUES ('English', 2);
+
+
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria (codigo) VALUES ('C');
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria (codigo) VALUES ('U');
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria (codigo) VALUES ('D');
+
+-- VERSION ESPAÑOL
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Creación'     , '', 1, 1);
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Actualizacion', '', 2, 1);
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Eliminacion'  , '', 3, 1);
+-- ENGLISH VERSION
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Create'       , '', 1, 2);
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Update'       , '', 2, 2);
+INSERT INTO datatabs_auditoria.Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Delete'       , '', 3, 2);
+
+
+USE datatabs_general;
 
 DROP TEMPORARY TABLE IF EXISTS temp;
-
-INSERT INTO Tb_TipoAuditoria (codigo) VALUES ('C');
-INSERT INTO Tb_TipoAuditoria (codigo) VALUES ('U');
-INSERT INTO Tb_TipoAuditoria (codigo) VALUES ('D');
-
-
-INSERT INTO Tb_Idioma (codigo) VALUES ('ES');
-INSERT INTO Tb_Idioma (codigo) VALUES ('EN');
-
-
--- VERSION ESPAÑOL
-INSERT INTO Tb_Idioma_T (idioma, id_idioma) VALUES ('Español', 1);
-INSERT INTO Tb_Idioma_T (idioma, id_idioma) VALUES ('Inglés' , 1);
--- ENGLISH VERSION
-INSERT INTO Tb_Idioma_T (idioma, id_idioma) VALUES ('Spanish', 2);
-INSERT INTO Tb_Idioma_T (idioma, id_idioma) VALUES ('English', 2);
-
-
--- VERSION ESPAÑOL
-INSERT INTO Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Creación'     , '', 1, 1);
-INSERT INTO Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Actualizacion', '', 2, 1);
-INSERT INTO Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Eliminacion'  , '', 3, 1);
--- ENGLISH VERSION
-INSERT INTO Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Create'       , '', 1, 2);
-INSERT INTO Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Update'       , '', 2, 2);
-INSERT INTO Tb_TipoAuditoria_T (tipoAuditoria, descripcion, id_tipoAuditoria, id_idioma) VALUES ('Delete'       , '', 3, 2);
-
 
 INSERT INTO Tb_Pais (codigoNUM, codigoALP2, codigoALP3) VALUES ('004', 'AF', 'AFG');
 INSERT INTO Tb_Pais (codigoNUM, codigoALP2, codigoALP3) VALUES ('248', 'AX', 'ALA');
@@ -1593,6 +1591,8 @@ FROM
 	ON A.codigo = B.codigo;
 
 
+USE datatabs_usuario;
+
 INSERT INTO Tb_Perfil (codigo) VALUES ('ADMIN');
 INSERT INTO Tb_Perfil (codigo) VALUES ('SDIST');
 INSERT INTO Tb_Perfil (codigo) VALUES ('DIST');
@@ -1611,6 +1611,9 @@ INSERT INTO Tb_Perfil_T (perfil, id_perfil, id_idioma) VALUES ('Super Distributo
 INSERT INTO Tb_Perfil_T (perfil, id_perfil, id_idioma) VALUES ('Distributor Admin.'       , 3, 2);
 INSERT INTO Tb_Perfil_T (perfil, id_perfil, id_idioma) VALUES ('Company Admin.'           , 4, 2);
 INSERT INTO Tb_Perfil_T (perfil, id_perfil, id_idioma) VALUES ('Branch Clerk'             , 5, 2);
+
+
+USE datatabs_general;
 
 INSERT INTO Tb_Sexo (codigo) VALUES ('U');
 INSERT INTO Tb_Sexo (codigo) VALUES ('F');
@@ -1636,7 +1639,10 @@ INSERT INTO Tb_TipoImagen_T (tipoImagen, descripcion, id_tipoImagen, id_idioma) 
 -- ENGLISH VERSION
 INSERT INTO Tb_TipoImagen_T (tipoImagen, descripcion, id_tipoImagen, id_idioma) VALUES ('Background', 'Background image' , 1, 2);
 INSERT INTO Tb_TipoImagen_T (tipoImagen, descripcion, id_tipoImagen, id_idioma) VALUES ('Keyboard'  , 'Keyboard image'   , 2, 2);
-INSERT  INTO Tb_TipoImagen_T (tipoImagen, descripcion, id_tipoImagen, id_idioma) VALUES ('System'   , 'System image'     , 3, 2);
+INSERT INTO Tb_TipoImagen_T (tipoImagen, descripcion, id_tipoImagen, id_idioma) VALUES ('System'    , 'System image'     , 3, 2);
+
+
+USE datatabs_main;
 
 INSERT INTO Tb_TipoNodo (codigo) VALUES ('EVNT');
 INSERT INTO Tb_TipoNodo (codigo) VALUES ('CHK');
@@ -1706,6 +1712,9 @@ INSERT INTO Tb_TipoMensaje_T (tipoMensaje, id_tipoMensaje, id_idioma) VALUES ('T
 INSERT INTO Tb_TipoMensaje_T (tipoMensaje, id_tipoMensaje, id_idioma) VALUES ('Facebook'          , 4, 2);
 INSERT INTO Tb_TipoMensaje_T (tipoMensaje, id_tipoMensaje, id_idioma) VALUES ('Telegram'          , 5, 1);
 
+
+USE datatabs_usuario;
+
 INSERT INTO Tb_TipoUsuarioD (codigo) VALUES ('ADMIN');
 INSERT INTO Tb_TipoUsuarioD (codigo) VALUES ('SDIST');
 INSERT INTO Tb_TipoUsuarioD (codigo) VALUES ('DIST');
@@ -1724,6 +1733,8 @@ INSERT INTO Tb_TipoUsuarioD_T (tipoUsuarioD, id_tipoUsuarioD, id_idioma) VALUES 
 INSERT INTO Tb_TipoUsuarioD_T (tipoUsuarioD, id_tipoUsuarioD, id_idioma) VALUES ('Distributor Admin.'       , 3, 2);
 INSERT INTO Tb_TipoUsuarioD_T (tipoUsuarioD, id_tipoUsuarioD, id_idioma) VALUES ('Company Admin.'           , 4, 2);
 INSERT INTO Tb_TipoUsuarioD_T (tipoUsuarioD, id_tipoUsuarioD, id_idioma) VALUES ('Branch Clerk'             , 5, 2);
+
+USE datatabs_main;
 
 INSERT INTO Tb_TipoConsumidor (codigo) VALUES ('NORM');
 INSERT INTO Tb_TipoConsumidor (codigo) VALUES ('VIP');
@@ -1802,6 +1813,30 @@ INSERT INTO Tb_TipoVariable_T (tipoVariable, id_tipoVariable, id_idioma) VALUES 
 INSERT INTO Tb_TipoVariable_T (tipoVariable, id_tipoVariable, id_idioma) VALUES ('Visit counter for branch office' , 2, 2);
 INSERT INTO Tb_TipoVariable_T (tipoVariable, id_tipoVariable, id_idioma) VALUES ('Visit counter for event'         , 3, 2);
 INSERT INTO Tb_TipoVariable_T (tipoVariable, id_tipoVariable, id_idioma) VALUES ('Visit counter for node'          , 4, 2);
+
+INSERT INTO Tb_TipoParametroConfiguracion (codigo) VALUES ('SEG');
+INSERT INTO Tb_TipoParametroConfiguracion (codigo) VALUES ('MIN');
+INSERT INTO Tb_TipoParametroConfiguracion (codigo) VALUES ('HOUR');
+INSERT INTO Tb_TipoParametroConfiguracion (codigo) VALUES ('DAY');
+INSERT INTO Tb_TipoParametroConfiguracion (codigo) VALUES ('MONTH');
+INSERT INTO Tb_TipoParametroConfiguracion (codigo) VALUES ('YEAR');
+
+-- VERSION ESPAÑOL
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Tiempo en segundos', 1, 1);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Tiempo en minutos' , 2, 1);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Tiempo en horas'   , 3, 1);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Tiempo en dias'    , 4, 1);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Tiempo en meses'   , 5, 1);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Tiempo en años'    , 6, 1);
+-- ENGLISH VERSION
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Time in seconds', 1, 2);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Time in minutes', 2, 2);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Time in hours'  , 3, 2);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Time in days'   , 4, 2);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Time in months' , 5, 2);
+INSERT INTO Tb_TipoParametroConfiguracion_T (tipoParametroConfiguracion, id_tipoParametroConfiguracion, id_idioma) VALUES ('Time in years'  , 6, 2);
+
+INSERT INTO Tb_ParametroConfiguracion (parametro, valor, descripcion, id_tipoParametroConfiguracion) VALUES ('VALID.TIME.BETWEEN.CHECKS', '2', 'Valid time between check-in', 3);
 
 -- NIVEL 0: EVENTO
 INSERT INTO Tb_ConfiguracionFlujo (nivel, id_tipoNodoActual, id_tipoNodoPosible) VALUES (0, 1, 2);
