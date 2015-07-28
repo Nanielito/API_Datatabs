@@ -2,7 +2,6 @@ var connection = require('../config/db'),
     Q          = require('q');
 
 exports.printError = function(err, res) {
-    //throw err;
     res.contentType('application/json');
     res.write(JSON.stringify({ msg : err }));
     res.end();
@@ -106,7 +105,7 @@ exports.buscarIdDispositivo = function(identificador) {
 			'SELECT ' +
 				'IFNULL(D.id_dispositivo, -1) AS dispostivo ' +
 			'FROM ' +
-				'promociones.tb_dispositivo AS D ' +
+				'datatabs_main.tb_dispositivo AS D ' +
 			'WHERE ' +
 				'D.identificacion = ?;';
 		

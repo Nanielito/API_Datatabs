@@ -15,6 +15,8 @@ var env               = 'dev',
     empresa           = require('../router/empresa'),
     sucursal          = require('../router/sucursal'),
     consumidor        = require('../router/consumidor');
+    nodo              = require('../router/nodo');
+
     
 var app = express();
 
@@ -86,34 +88,34 @@ app.put   ('/usuariod/:val'     , usuariod.modificarUsuarioD );
 /***************************************** DISPOSITIVO *******************************************/
 /*************************************************************************************************/
 /* HttpGet */
-app.get   ('/dispositivo/:val?'        , dispositivo.buscarDispositivo         );
-app.get   ('/dispositivo/evento/:val?' , dispositivo.buscarEventos             );
-/* [HttpPost] */                                                             
-app.post  ('/dispositivo'              , dispositivo.crearDispositivo          );
-/* [HttpPut] */
-app.put   ('/dispositivo/:val'         , dispositivo.modificarDispositivo      );
-app.put   ('/dispositivo/sucursal/:val', dispositivo.asociarDispositivoSucursal);
-app.put   ('/dispositivo/evento/:val'  , dispositivo.asociarEventoDispositivo  );
-app.put   ('/dispositivo/validar/:val' , dispositivo.validarDispositivo        );
-/* [HttpDelete] */
-//app.delete('/dispositivo/:id'          , dispositivo.eliminarDispositivo       );
+app.get   ('/dispositivo/:val?'           , dispositivo.buscarDispositivo         );
+app.get   ('/dispositivo/dispositivo/:val', dispositivo.existeDispositivo         );
+app.get   ('/dispositivo/evento/:val?'    , dispositivo.buscarEventos             );
+/* [HttpPost] */                                                                
+app.post  ('/dispositivo'                 , dispositivo.crearDispositivo          );
+/* [HttpPut] */                           
+app.put   ('/dispositivo/:val'            , dispositivo.modificarDispositivo      );
+app.put   ('/dispositivo/sucursal/:val'   , dispositivo.asociarDispositivoSucursal);
+app.put   ('/dispositivo/evento/:val'     , dispositivo.asociarEventoDispositivo  );
+app.put   ('/dispositivo/validar/:val'    , dispositivo.validarDispositivo        );
+/* [HttpDelete] */                        
+//app.delete('/dispositivo/:id'             , dispositivo.eliminarDispositivo       );
 
 
 /*************************************************************************************************/
 /******************************************** EVENTO *********************************************/
 /*************************************************************************************************/
 /* HttpGet */
-app.get   ('/evento/:company/:office/:offset/:val?'        , evento.buscarEvento );
-app.get   ('/evento/:company/:office/next/:offset/:val'    , evento.buscarEvento );
-app.get   ('/evento/:company/:office/previous/:offset/:val', evento.buscarEvento );
+app.get   ('/evento/:company/:office/:offset/:val?'        , evento.buscarEvento         );
+app.get   ('/evento/:company/:office/next/:offset/:val'    , evento.buscarEvento         );
+app.get   ('/evento/:company/:office/previous/:offset/:val', evento.buscarEvento         );
 /* [HttpPost] */                                                 
-app.post  ('/evento'                               , evento.crearEvento          );
-/* [HttpPut] */                                                                        
-app.put   ('/evento/:val'                          , evento.modificarEvento      );
-app.put   ('/evento/sucursal/:val'                 , evento.asociarEventoSucursal);
-/* [HttpDelete] */
-//app.delete('/evento/:id'                           , evento.eliminarEvento       );
-
+app.post  ('/evento'                                       , evento.crearEvento          );
+/* [HttpPut] */                                                                                
+app.put   ('/evento/:val'                                  , evento.modificarEvento      );
+app.put   ('/evento/sucursal/:val'                         , evento.asociarEventoSucursal);
+/* [HttpDelete] */                                         
+//app.delete('/evento/:id'                                   , evento.eliminarEvento       );
 
 /*************************************************************************************************/
 /************************************** SUPERDISTRIBUIDOR ****************************************/
@@ -145,26 +147,30 @@ app.put   ('/distribuidor/:val' , distribuidor.modificarDistribuidor);
 /******************************************** EMPRESA ********************************************/
 /*************************************************************************************************/
 /* HttpGet */
-app.get   ('/empresa/:val?', empresa.buscarEmpresa   );
+app.get   ('/empresa/:distributor/:offset/:val?'        , empresa.buscarEmpresa );
+app.get   ('/empresa/:distributor/next/:offset/:val'    , empresa.buscarEmpresa );
+app.get   ('/empresa/:distributor/previous/:offset/:val', empresa.buscarEmpresa );
 /* [HttpPost] */
-app.post  ('/empresa'      , empresa.crearEmpresa    );
+app.post  ('/empresa'                                   , empresa.crearEmpresa    );
 /* [HttpPut] */
-app.put   ('/empresa/:val' , empresa.modificarEmpresa);
+app.put   ('/empresa/:val'                              , empresa.modificarEmpresa);
 /* [HttpDelete] */
-//app.delete('/empresa/:id'  , empresa.eliminarEmpresa );
+//app.delete('/empresa/:id'                               , empresa.eliminarEmpresa );
 
 
 /*************************************************************************************************/
 /******************************************** SUCURSAL *******************************************/
 /*************************************************************************************************/
 /* HttpGet */
-app.get   ('/sucursal/:val?', sucursal.buscarSucursal   );
+app.get   ('/sucursal/:company/:offset/:val?'        , sucursal.buscarSucursal );
+app.get   ('/sucursal/:company/next/:offset/:val'    , sucursal.buscarSucursal );
+app.get   ('/sucursal/:company/previous/:offset/:val', sucursal.buscarSucursal );
 /* [HttpPost] */
-app.post  ('/sucursal'      , sucursal.crearSucursal    );
-/* [HttpPut] */
-app.put   ('/sucursal/:val' , sucursal.modificarSucursal);
+app.post  ('/sucursal'                               , sucursal.crearSucursal    );
+/* [HttpPut] */                                      
+app.put   ('/sucursal/:val'                          , sucursal.modificarSucursal);
 /* [HttpDelete] */
-//app.delete('/sucursal/:id'  , sucursal.eliminarSucursal );
+//app.delete('/sucursal/:id'                           , sucursal.eliminarSucursal );
 
 
 /*************************************************************************************************/
@@ -179,6 +185,12 @@ app.put   ('/consumidor/:val'        , consumidor.modificarConsumidor);
 app.put   ('/consumidor/validar/:val', consumidor.validarConsumidor  );
 /* [HttpDelete] */
 //app.delete('/consumidor/:id'  , consumidor.eliminarConsumidor );
+
+/*************************************************************************************************/
+/******************************************* NODO ******************************************/
+/*************************************************************************************************/
+/* [HttpPost] */ 
+app.post('/nodo/respuesta/:val?', nodo.crearRespuesta);
 
 exports.app    = app;
 exports.http   = http;
